@@ -1,28 +1,29 @@
 require 'DockingStation'
 
 describe DockingStation do
-  let(:bike) { double :bike, working?: true }
-  
+  let(:bike) { double :bike, broken?: false }
+  let(:broken_bike) { double :bike, broken?: true}
   it { is_expected.to respond_to :release_bike }
 
   it {is_expected.to respond_to(:dock).with(1).argument }
   # expect to accept broken bike 
-  it {is_expected.to respond_to(:dock).with(2).argument }
+  # it {is_expected.to respond_to(:dock).with(2).argument }
 
-  it {is_expected.to respond_to (:bike)}
+  it {is_expected.to respond_to (:bikes)}
 
   it 'does not release a bike if no bikes available' do
     expect {subject.release_bike}.to raise_error("No bikes available")
   end
 
   it 'releases working bikes' do
-    expect(bike).to be_working
+    expect(bike).to_not be_broken
   end
 
   it 'return only working bikes' do 
-    expect{subject.dock(bike, true).release_bike}.to raise_error("No working bikes available")
+    #allow(bike).to receive(:broken?).and_return(true)
+    expect{subject.dock(broken_bike).release_bike}.to raise_error("No working bikes available")
     # dock a working bike, dock a broken bike, release a bike and see if it works
-    expect(subject.dock(bike).dock(bike, true).release_bike.working?).to be true
+    expect(subject.dock(bike).dock(broken_bike).release_bike.broken?).to be false
 
   end
 
