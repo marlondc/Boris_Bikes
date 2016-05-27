@@ -19,9 +19,12 @@ describe DockingStation do
     expect(bike).to be_working
   end
 
-  # it 'accepts broken bike' do 
-  #   expect(subject.dock(Bike.new, true)).to 
-  # end
+  it 'return only working bikes' do 
+    expect{subject.dock(Bike.new, true).release_bike}.to raise_error("No working bikes available")
+    # dock a working bike, dock a broken bike, release a bike and see if it works
+    expect(subject.dock(Bike.new).dock(Bike.new, true).release_bike.working?).to be true
+
+  end
 
   it 'cannot dock bikes' do
     DockingStation::DEFAULT_CAPACITY.times{subject.dock(Bike.new)}
